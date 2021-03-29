@@ -6,7 +6,7 @@ const chalk = require('chalk');
 var query = require('cli-interact').getYesNo;
 const log = console.log;
 
-const scrapeCompany = async (companyName) => {
+const scrapeCompany = async (companyName, searchTerm) => {
     // LOCAL RUNNING ON COMPUTER
     const browser = await puppeteer.launch({
         headless: true,
@@ -14,7 +14,7 @@ const scrapeCompany = async (companyName) => {
     const page = await browser.newPage();
     await page.goto('https://google.com');
     let company = companyName.toLowerCase();
-    let myLocalValue = `site:linkedin.com \"@${company}.com\" \"recruiter\" email`;
+    let myLocalValue = `site:linkedin.com \"@${company}.com\" \"${searchTerm}\" email`;
     await page.$eval('input[name=q]', (el, value) => el.value = value, myLocalValue);
     page.keyboard.press('Enter');
     await page.waitForNavigation();
@@ -37,6 +37,9 @@ const scrapeCompany = async (companyName) => {
 };
 
 const driver = async () => {
+    // Variable to change if you want to specify search term
+    var searchTerm = 'recruiter';
+    // Do not touch
     var arr = [];
     var results = [];
     log(chalk.blue('Hello, please make sure that the input.csv file has been written with the list of companies you want'));
@@ -55,7 +58,7 @@ const driver = async () => {
             console.log('CSV file successfully processed');
             for (const company of arr) {
                 console.log(`Company ${company} is being processed`);
-                companySearch = await scrapeCompany(company);
+                companySearch = await scrapeCompany(company, searchTerm);
                 results = [...results, ...companySearch];
             }
             let data = results;
