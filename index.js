@@ -18,7 +18,7 @@ const scrapeCompany = async (companyName, searchTerm) => {
     await page.$eval('input[name=q]', (el, value) => el.value = value, myLocalValue);
     page.keyboard.press('Enter');
     await page.waitForNavigation();
-    return await page.evaluate(() => {
+    return await page.evaluate((company) => {
         function extractEmails(text) {
             return text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
         }
@@ -26,13 +26,14 @@ const scrapeCompany = async (companyName, searchTerm) => {
         let temp = [];
         for (const elem of results) {
             temp.push({
+                company: company,
                 link: elem.querySelector('a').href.replace(/(\r\n|\n|\r)/gm, ""),
                 description: elem.innerText.replace(/(\r\n|\n|\r)/gm, ""),
                 email: extractEmails(elem.innerText)
             });
         }
         return temp;
-    });
+    }, company);
     browser.close();
 };
 
