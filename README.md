@@ -2,6 +2,8 @@
 Project utilizes Google search functionality to scan Linkedin for anything that has an email
 
 ## Example
+![Example of Linkedin](./example.jpg)
+
 ```
 let myLocalValue = `site:linkedin.com \"@${company}.com\" \"${searchTerm}\" email`;
 ```
@@ -24,3 +26,5 @@ npm install
 npm start
 ```
 7. Follow instructions and wait for output to be spit out
+> Note: if you want to change the specific search term being used:
+> var searchTerm = 'recruiter';
